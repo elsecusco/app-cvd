@@ -1,0 +1,27 @@
+@media only screen and (min-width: 768px) {
+  img {
+    width: 13%;
+    height: 13%;
+  }
+}
+.style-img {
+  margin: 20px 0 20px 0;
+}
+.style-span {
+  font-size: 1.8rem;
+  color: #01478c;
+  text-align: center;
+}
+.style-asunto {
+    padding: 10px;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  .style-asunto-documento {
+   
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  hr.style1{
+	border-top: 1px solid #111010;
+}
