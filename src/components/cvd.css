@@ -13,15 +13,27 @@
   text-align: center;
 }
 .style-asunto {
-    padding: 10px;
-    font-size: 1.8rem;
-    text-align: center;
-  }
-  .style-asunto-documento {
-   
-    font-size: 1.5rem;
-    text-align: center;
-  }
-  hr.style1{
-	border-top: 1px solid #111010;
+  padding: 10px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+.style-asunto-documento {
+  font-size: 1.5rem;
+  text-align: center;
+}
+hr.style1 {
+  border-top: 1px solid #111010;
+}
+.style-div-botones {
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+.style-boton {
+  background-color: #01478c;
+  color: white;
+}
+
+.btn-primary {
+    background-color: #01478c !important;
+    border-color: #01478c !important;
 }

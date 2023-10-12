@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
+import { environment as env } from "../environments/environment";
 
 export default axios.create({
-  baseURL: "http://localhost:9302/mgd/",
+  baseURL: env.base_url,
   headers: {
     "Content-type": "application/json",
   },
@@ -28,9 +29,9 @@ export function axiosDownloadFile(url: any, name: string) {
       document.body.removeChild(anchorElement);
       window.URL.revokeObjectURL(href);
     })
-    .catch((error) => {
-      console.log("error: ", error);
-    });
+    // .catch((error) => {
+    //   console.log("error: ", error);
+    // });
 }
 
 export function axiosFile(url: any) {

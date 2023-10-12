@@ -1,33 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import "./cvd.css";
 import { DocumentoExpediente } from "../models/documentos";
+import { updateCaptcha, updateExpediente } from "../redux/expedienteReducer";
 import CvdService from "../services/CvdService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./cvd.css";
 
 export default function CVD() {
+  const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
-  const notify = () => toast("Wow so easy!");
+  const notify = () => toast.error("No existe documento!");
 
   const [documentoExpediente, setDocumentoExpediente] =
     useState<DocumentoExpediente>({} as DocumentoExpediente);
-  const [CVD, setCVD] = useState('');
+  const [CVD, setCVD] = useState("");
   const [guid] = useState(params.id);
   const [isCaptchaSuccessful, setIsCaptchaSuccess] = React.useState(false);
+
+  useEffect(() => {
+    if (guid) getDocumentoExpediente(guid, "guid");
+    if (CVD.length == 16) getDocumentoExpediente(CVD, "cvd");
+  }, [CVD, guid]);
 
   const getDocumentoExpediente = (id: string, tipo: string) => {
     if (tipo === "cvd") {
       CvdService.getDocumentoExpedienteCVD(id)
         .then((response: any) => {
           setDocumentoExpediente(response.data[0]);
+          dispatch(updateExpediente(response.data[0]));
         })
         .catch((e: Error) => {
+          if (e.code === "ERR_BAD_REQUEST") notify();
           setDocumentoExpediente({} as DocumentoExpediente);
-          console.log(e);
         });
     } else if (tipo === "guid") {
       CvdService.getDocumentoExpedienteGUID(id)
@@ -35,26 +44,29 @@ export default function CVD() {
           setCVD(response.data[0].DatosExpediente.Cvd);
         })
         .catch((e: Error) => {
-          setCVD("");
+          //   notify();
+          //   setCVD("");
           console.log(e);
         });
     }
   };
 
-  useEffect(() => {
-    if (CVD) getDocumentoExpediente(CVD, "cvd");
-    if (guid) getDocumentoExpediente(guid, "guid");
-  }, [CVD, guid]);
-
-  function onChange(value: unknown) {
+  function onChange(value: any) {
     setIsCaptchaSuccess(true);
-    console.log("captcha value: ", value);
+    dispatch(updateCaptcha(value));
   }
   function goExpediente() {
     if (documentoExpediente.Documentos != undefined)
       navigate("/verExpedientePorCVD/" + CVD);
-    else notify;
   }
+  function goHome() {
+    navigate("/");
+  }
+  const handleChange = (event: any) => {
+    const result = event.target.value.replace(/\D/g, "");
+    setCVD(result);
+  };
+
   return (
     <div>
       <body>
@@ -73,12 +85,14 @@ export default function CVD() {
               Visor de Expedientes
             </span>
             <img
+              onClick={goHome}
               className="d-flex col-md-2 col-lg-1 col-4 justify-content-center style-img"
               src="../src/assets/images/logo-else.png"
             ></img>
             <div className="d-flex justify-content-center">
               <div className="row col-5">
                 <div className="row col-12 align-items-center ">
+                  <ToastContainer />
                   <span
                     className="d-flex col-md-2 col-12 justify-content-center"
                     style={{ textAlign: "left" }}
@@ -87,10 +101,11 @@ export default function CVD() {
                   </span>
                   <div className="d-flex col-md-8 col-12  p-3 justify-content-center">
                     <input
+                      pattern="[0-9]+"
                       className="text-center form-control border-dark"
                       placeholder="Ingrese CVD"
                       value={CVD}
-                      onChange={(e) => setCVD(e.target.value)}
+                      onChange={handleChange}
                     ></input>
                   </div>
                 </div>

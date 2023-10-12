@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useParams } from "react-router";
-import "./cvd.css";
-import CvdService from "../services/CvdService";
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+// import { useSelector } from "react-redux";
+import CvdService from "../services/CvdService";
 import { DocumentoExpediente, Documento } from "../models/documentos";
 import ModalDocumento from "./modalDocumento";
-import { axiosDownloadFile, axiosFile } from "../http-common";
+import { environment as env } from "./../environments/environment";
+import { axiosDownloadFile, axiosFile } from "../services/http-common";
+import "./cvd.css";
 
 export default function Expediente() {
+  const navigate = useNavigate();
+  const urlDescarga = env.base_url + "DownloadFile?guid=";
   const params = useParams();
+//   const expediente = useSelector(
+//     (state: RootState) => state.expediente.documentoExpediente
+//   );
   const [documentoExpediente, setDocumentoExpediente] =
     useState<DocumentoExpediente>({} as DocumentoExpediente);
   const [url, setUrl] = useState<any>();
@@ -17,34 +24,7 @@ export default function Expediente() {
     Documento[]
   >([]);
   const [modalShow, setModalShow] = useState(false);
-  const getDocumentoExpediente = (id: string) => {
-    CvdService.getDocumentoExpedienteCVD(id)
-      .then((response: any) => {
-        setDocumentoExpediente(response.data[0]);
-      })
-      .catch((e: Error) => {
-        setDocumentoExpediente({} as DocumentoExpediente);
-        console.log(e);
-      });
-  };
-  const descargar = (id: any, nombre: string) => {
-    axiosDownloadFile(
-      "http://localhost:9302/mgd/DownloadFile?guid=" + id,
-      nombre
-    );
-  };
-  const visualizar = (id: any) => {
-    setModalShow(true);
-    axiosFile("http://localhost:9302/mgd/DownloadFile?guid=" + id).then(
-      (response: any) => {
-        //Create a Blob from the PDF Stream
-        const file = new Blob([response.data], { type: "application/pdf" });
-        //Build a URL from the file
-        const fileURL = URL.createObjectURL(file);
-        setUrl(fileURL);
-      }
-    );
-  };
+
   useEffect(() => {
     if (CVD) {
       if (listDocumentoExpediente?.length == 0) {
@@ -54,12 +34,40 @@ export default function Expediente() {
     }
   });
 
+  const getDocumentoExpediente = (id: string) => {
+    CvdService.getDocumentoExpedienteCVD(id)
+      .then((response: any) => {
+        setDocumentoExpediente(response.data[0]);
+      })
+      .catch((e: Error) => {
+        if (e.code === "ERR_BAD_REQUEST") navigate("/");
+        setDocumentoExpediente({} as DocumentoExpediente);
+        // console.log(e);
+      });
+  };
+
+  const descargar = (id: any, nombre: string) => {
+    axiosDownloadFile(urlDescarga + id, nombre);
+  };
+
+  const visualizar = (id: any) => {
+    setModalShow(true);
+    axiosFile(urlDescarga + id).then((response: any) => {
+      //Create a Blob from the PDF Stream
+      const file = new Blob([response.data], { type: "application/pdf" });
+      //Build a URL from the file
+      const fileURL = URL.createObjectURL(file);
+      setUrl(fileURL);
+    });
+  };
+
+  function goHome() {
+    navigate("/");
+  }
+
   return (
-    <div>
-      <div
-        className="w-75 mx-auto d-flex justify-content-center align-items-center"
-        style={{ backgroundColor: "#dcdddf" }}
-      >
+    <div style={{ backgroundColor: "#dcdddf" }}>
+      <div className="w-75 mx-auto d-flex justify-content-center align-items-center">
         <body>
           <div
             className="d-flex row justify-content-center align-items-center vh-100"
@@ -67,7 +75,7 @@ export default function Expediente() {
           >
             <div
               className="row col-12 justify-content-center"
-              style={{ marginTop: "-250px" }}
+              style={{ marginTop: "-100px" }}
             >
               <span className="d-flex justify-content-center style-span">
                 Servicio de Verificación de Representaciones Impresas
@@ -76,6 +84,7 @@ export default function Expediente() {
                 Visor de Expedientes
               </span>
               <img
+                onClick={goHome}
                 className="d-flex col-md-2 col-lg-2 col-4 justify-content-center style-img"
                 src="../src/assets/images/logo-else.png"
               ></img>
@@ -97,33 +106,40 @@ export default function Expediente() {
                 {listDocumentoExpediente != undefined ? (
                   listDocumentoExpediente
                     .filter((doc) => doc?.NombreArchivo != "")
-                    .map((docExp: Documento) => (
+                    .map((docExp: Documento, index: number) => (
                       <>
                         <div className="d-flex justify-content-around">
-                          <div className="col-10">
+                          <div className="col-10" key={index}>
                             <span className="style-asunto-documento">
                               {docExp?.NombreArchivo}
                             </span>
                           </div>
                           <div className="d-flex justify-content-center col-2">
-                            <button
-                              type="button"
-                              className="btn  btn-secondary p3 ml-5"
-                              onClick={() => {
-                                visualizar(docExp?.Guid);
-                              }}
-                            >
-                              <i className="bi bi-eye"></i>
-                            </button>
-                            <button
-                              type="button"
-                              className="btn  btn-success p3 ml-5"
-                              onClick={() => {
-                                descargar(docExp?.Guid, docExp?.NombreArchivo);
-                              }}
-                            >
-                              <i className="bi bi-download"></i>
-                            </button>
+                            <div className="style-div-botones">
+                              <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() => {
+                                  visualizar(docExp?.Guid);
+                                }}
+                              >
+                                <i className="bi bi-eye"></i>
+                              </button>
+                            </div>
+                            <div className="style-div-botones">
+                              <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() => {
+                                  descargar(
+                                    docExp?.Guid,
+                                    docExp?.NombreArchivo
+                                  );
+                                }}
+                              >
+                                <i className="bi bi-download"></i>
+                              </button>
+                            </div>
                             {url != null ? (
                               <ModalDocumento
                                 url={url}

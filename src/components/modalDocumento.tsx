@@ -22,9 +22,9 @@ export default function ModalDocumento(props: any) {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
+        {/* <Modal.Title id="contained-modal-title-vcenter">
           Modal heading
-        </Modal.Title>
+        </Modal.Title> */}
       </Modal.Header>
       <Modal.Body>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
@@ -44,9 +44,9 @@ export default function ModalDocumento(props: any) {
           </div>
         </Worker>
       </Modal.Body>
-      <Modal.Footer>
+      {/* <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
-      </Modal.Footer>
+      </Modal.Footer> */}
     </Modal>
   );
 }
