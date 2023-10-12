@@ -7,10 +7,13 @@ const getDocumentoExpedienteCVD = (id: string) => {
 const getDocumentoExpedienteGUID = (id: string) => {
     return http.get<DocumentoExpediente>(`/BuscarPorGuid?guid=${id}`);
   };
-
+  const getDescargarDocumentoGUID = (id: string) => {
+    return http.get(`/DownloadFile?guid=${id}`);
+  };
 const CvdService = {
   getDocumentoExpedienteCVD,
   getDocumentoExpedienteGUID,
+  getDescargarDocumentoGUID
 };
 
 export default CvdService;

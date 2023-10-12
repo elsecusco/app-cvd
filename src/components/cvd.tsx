@@ -15,7 +15,7 @@ export default function CVD() {
 
   const [documentoExpediente, setDocumentoExpediente] =
     useState<DocumentoExpediente>({} as DocumentoExpediente);
-  const [CVD, setCVD] = useState("0067192076612071");
+  const [CVD, setCVD] = useState('');
   const [guid] = useState(params.id);
   const [isCaptchaSuccessful, setIsCaptchaSuccess] = React.useState(false);
 
@@ -32,10 +32,10 @@ export default function CVD() {
     } else if (tipo === "guid") {
       CvdService.getDocumentoExpedienteGUID(id)
         .then((response: any) => {
-          setCVD(response.data[0].DatosExpediente.FechaPublicacion);
+          setCVD(response.data[0].DatosExpediente.Cvd);
         })
         .catch((e: Error) => {
-          setDocumentoExpediente({} as DocumentoExpediente);
+          setCVD("");
           console.log(e);
         });
     }
@@ -52,7 +52,7 @@ export default function CVD() {
   }
   function goExpediente() {
     if (documentoExpediente.Documentos != undefined)
-      navigate("/expedienteCVD/" + CVD);
+      navigate("/verExpedientePorCVD/" + CVD);
     else notify;
   }
   return (

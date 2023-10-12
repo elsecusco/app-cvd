@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
     element: <CVD />,
   },
   {
-    path: "/expedienteCVD/:id",
+    path: "/verExpedientePorCVD/:id",
     element: <Expediente />,
   },
 ]);

@@ -19,3 +19,8 @@ export interface Documento {
   NombreArchivo?: string;
   Publicar?: number;
 }
+
+export interface RutaDocumento {
+    OriginalPath?: string;
+    FullPath?: string;
+}

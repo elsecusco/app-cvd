@@ -5,11 +5,13 @@ import CvdService from "../services/CvdService";
 import { useEffect, useState } from "react";
 import { DocumentoExpediente, Documento } from "../models/documentos";
 import ModalDocumento from "./modalDocumento";
+import { axiosDownloadFile, axiosFile } from "../http-common";
 
 export default function Expediente() {
   const params = useParams();
   const [documentoExpediente, setDocumentoExpediente] =
     useState<DocumentoExpediente>({} as DocumentoExpediente);
+  const [url, setUrl] = useState<any>();
   const [CVD, setCVD] = useState(params.id);
   const [listDocumentoExpediente, setListDocumentoExpediente] = useState<
     Documento[]
@@ -25,7 +27,24 @@ export default function Expediente() {
         console.log(e);
       });
   };
-
+  const descargar = (id: any, nombre: string) => {
+    axiosDownloadFile(
+      "http://localhost:9302/mgd/DownloadFile?guid=" + id,
+      nombre
+    );
+  };
+  const visualizar = (id: any) => {
+    setModalShow(true);
+    axiosFile("http://localhost:9302/mgd/DownloadFile?guid=" + id).then(
+      (response: any) => {
+        //Create a Blob from the PDF Stream
+        const file = new Blob([response.data], { type: "application/pdf" });
+        //Build a URL from the file
+        const fileURL = URL.createObjectURL(file);
+        setUrl(fileURL);
+      }
+    );
+  };
   useEffect(() => {
     if (CVD) {
       if (listDocumentoExpediente?.length == 0) {
@@ -75,30 +94,52 @@ export default function Expediente() {
                 <br />
                 <hr className="style1" />
                 <br />
-
-                {listDocumentoExpediente?.map((docExp: Documento) => (
-                  <>
-                    <div className="d-flex justify-content-around">
-                      <span className="style-asunto-documento">
-                        {docExp?.NombreArchivo}
-                      </span>
-                      <div className="d-flex justify-content-center col-1">
-                        <button type="button" className="btn btn-primary px-3">
-                          <i className="bi bi-x-diamond" aria-hidden="true"></i>
-                        </button>
-                        <ModalDocumento
-                          show={modalShow}
-                          onHide={() => setModalShow(false)}
-                        />
-                      </div>
-                    </div>
-                  </>
-                ))}
-              </div>
-              <div className="mx-auto d-flex justify-content-center align-items-center" >
-                <button type="button" className="btn btn-primary"><i className="bi bi-4-square-fill"></i>
-                  {/* <span className="bi-trash"></span> */}
-                </button>
+                {listDocumentoExpediente != undefined ? (
+                  listDocumentoExpediente
+                    .filter((doc) => doc?.NombreArchivo != "")
+                    .map((docExp: Documento) => (
+                      <>
+                        <div className="d-flex justify-content-around">
+                          <div className="col-10">
+                            <span className="style-asunto-documento">
+                              {docExp?.NombreArchivo}
+                            </span>
+                          </div>
+                          <div className="d-flex justify-content-center col-2">
+                            <button
+                              type="button"
+                              className="btn  btn-secondary p3 ml-5"
+                              onClick={() => {
+                                visualizar(docExp?.Guid);
+                              }}
+                            >
+                              <i className="bi bi-eye"></i>
+                            </button>
+                            <button
+                              type="button"
+                              className="btn  btn-success p3 ml-5"
+                              onClick={() => {
+                                descargar(docExp?.Guid, docExp?.NombreArchivo);
+                              }}
+                            >
+                              <i className="bi bi-download"></i>
+                            </button>
+                            {url != null ? (
+                              <ModalDocumento
+                                url={url}
+                                show={modalShow}
+                                onHide={() => setModalShow(false)}
+                              />
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    ))
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </div>

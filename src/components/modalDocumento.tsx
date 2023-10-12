@@ -5,9 +5,15 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { useEffect, useState } from "react";
 
 export default function ModalDocumento(props: any) {
-    const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  const [url, setUrl] = useState<any>();
+
+  useEffect(() => {
+    setUrl(props.url);
+  });
   return (
     <Modal
       {...props}
@@ -21,7 +27,7 @@ export default function ModalDocumento(props: any) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
           <div
             style={{
               height: "750px",
@@ -30,10 +36,11 @@ export default function ModalDocumento(props: any) {
               marginRight: "auto",
             }}
           >
-            <Viewer
-              fileUrl="/ybaca.pdf"
-              plugins={[defaultLayoutPluginInstance]}
-            />
+            {url != null ? (
+              <Viewer fileUrl={url} plugins={[defaultLayoutPluginInstance]} />
+            ) : (
+              <></>
+            )}
           </div>
         </Worker>
       </Modal.Body>
