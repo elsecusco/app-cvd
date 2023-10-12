@@ -101,6 +101,7 @@ export default function Expediente() {
                 </span>
 
                 <br />
+                <span className="d-flex justify-content-start style-span">Contenido Expediente</span>
                 <hr className="style1" />
                 <br />
                 {listDocumentoExpediente != undefined ? (
