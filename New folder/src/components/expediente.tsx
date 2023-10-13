@@ -13,13 +13,13 @@ export default function Expediente() {
   const navigate = useNavigate();
   const urlDescarga = env.base_url + "DownloadFile?guid=";
   const params = useParams();
-  //   const expediente = useSelector(
-  //     (state: RootState) => state.expediente.documentoExpediente
-  //   );
+//   const expediente = useSelector(
+//     (state: RootState) => state.expediente.documentoExpediente
+//   );
   const [documentoExpediente, setDocumentoExpediente] =
     useState<DocumentoExpediente>({} as DocumentoExpediente);
   const [url, setUrl] = useState<any>();
-  const [CVD] = useState(params.id);
+  const [CVD, setCVD] = useState(params.id);
   const [listDocumentoExpediente, setListDocumentoExpediente] = useState<
     Documento[]
   >([]);
@@ -40,7 +40,7 @@ export default function Expediente() {
         setDocumentoExpediente(response.data[0]);
       })
       .catch((e: Error) => {
-        if (e.name === "AxiosError") navigate("/");
+        if (e.code === "ERR_BAD_REQUEST") navigate("/");
         setDocumentoExpediente({} as DocumentoExpediente);
         // console.log(e);
       });
@@ -75,7 +75,7 @@ export default function Expediente() {
           >
             <div
               className="row col-12 justify-content-center"
-              
+              style={{ marginTop: "-100px" }}
             >
               <span className="d-flex justify-content-center style-span">
                 Servicio de Verificación de Representaciones Impresas
@@ -101,9 +101,7 @@ export default function Expediente() {
                 </span>
 
                 <br />
-                <span className="d-flex justify-content-start style-span">
-                  Contenido Expediente
-                </span>
+                <span className="d-flex justify-content-start style-span">Contenido Expediente</span>
                 <hr className="style1" />
                 <br />
                 {listDocumentoExpediente != undefined ? (
@@ -136,7 +134,7 @@ export default function Expediente() {
                                 onClick={() => {
                                   descargar(
                                     docExp?.Guid,
-                                    docExp!.NombreArchivo!.toString()
+                                    docExp?.NombreArchivo
                                   );
                                 }}
                               >

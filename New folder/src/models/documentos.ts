@@ -16,7 +16,7 @@ export interface DatosExpediente {
 
 export interface Documento {
   Guid?: string;
-  NombreArchivo?: string | undefined;
+  NombreArchivo?: string;
   Publicar?: number;
 }
 

@@ -35,7 +35,7 @@ export default function CVD() {
           dispatch(updateExpediente(response.data[0]));
         })
         .catch((e: Error) => {
-          if (e.name === "AxiosError") notify();
+          if (e.code === "ERR_BAD_REQUEST") notify();
           setDocumentoExpediente({} as DocumentoExpediente);
         });
     } else if (tipo === "guid") {
