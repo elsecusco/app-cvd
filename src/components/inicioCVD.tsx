@@ -8,6 +8,7 @@ import { updateCaptcha, updateExpediente } from "../redux/expedienteReducer";
 import CvdService from "../services/CvdService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import logo from "/verifica-cvd/assets/images/logo-else.png";
 import "./cvd.css";
 
 export default function CVD() {
@@ -57,10 +58,10 @@ export default function CVD() {
   }
   function goExpediente() {
     if (documentoExpediente.Documentos != undefined)
-      navigate("/verExpedientePorCVD/" + CVD);
+      navigate("/verifica-cvd/verExpedientePorCVD/" + CVD);
   }
   function goHome() {
-    navigate("/");
+    navigate("/verifica-cvd");
   }
   const handleChange = (event: any) => {
     const result = event.target.value.replace(/\D/g, "");
@@ -87,7 +88,7 @@ export default function CVD() {
             <img
               onClick={goHome}
               className="d-flex col-md-2 col-lg-1 col-4 justify-content-center style-img"
-              src="../src/assets/images/logo-else.png"
+              src="/verifica-cvd/assets/images/logo-else.png"
             ></img>
             <div className="d-flex justify-content-center">
               <div className="row col-5">
@@ -119,7 +120,7 @@ export default function CVD() {
                   <button
                     style={{ maxWidth: "200px", backgroundColor: "#01478c" }}
                     className="form-control text-white w-100"
-                    disabled={isCaptchaSuccessful}
+                    disabled={!isCaptchaSuccessful}
                     onClick={goExpediente}
                   >
                     Buscar

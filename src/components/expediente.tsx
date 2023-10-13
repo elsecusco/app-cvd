@@ -7,6 +7,10 @@ import { DocumentoExpediente, Documento } from "../models/documentos";
 import ModalDocumento from "./modalDocumento";
 import { environment as env } from "./../environments/environment";
 import { axiosDownloadFile, axiosFile } from "../services/http-common";
+
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+// import logo from "/verifica-cvd/assets/images/logo-else.png";
 import "./cvd.css";
 
 export default function Expediente() {
@@ -40,7 +44,7 @@ export default function Expediente() {
         setDocumentoExpediente(response.data[0]);
       })
       .catch((e: Error) => {
-        if (e.name === "AxiosError") navigate("/");
+        if (e.name === "AxiosError") navigate("/verifica-cvd");
         setDocumentoExpediente({} as DocumentoExpediente);
         // console.log(e);
       });
@@ -62,7 +66,7 @@ export default function Expediente() {
   };
 
   function goHome() {
-    navigate("/");
+    navigate("/verifica-cvd");
   }
 
   return (
@@ -73,25 +77,28 @@ export default function Expediente() {
             className="d-flex row justify-content-center align-items-center vh-100"
             style={{ backgroundColor: "#f7f7f7" }}
           >
-            <div
-              className="row col-12 justify-content-center"
-              
-            >
-              <span className="d-flex justify-content-center style-span">
-                Servicio de Verificación de Representaciones Impresas
-              </span>
-              <span className="d-flex justify-content-center style-span">
-                Visor de Expedientes
-              </span>
-              <img
-                onClick={goHome}
-                className="d-flex col-md-2 col-lg-2 col-4 justify-content-center style-img"
-                src="../src/assets/images/logo-else.png"
-              ></img>
+            <div className="row col-12 justify-content-center">
+              <div className="d-flex col-12">
+                <div className="d-flex col-2 justify-content-center align-items-center">
+                  <img
+                    style={{ width: "70%", height: "70%" }}
+                    onClick={goHome}
+                    src="/verifica-cvd/assets/images/logo-else.png"
+                  />
+                </div>
+                <div className="col-8 justify-content-center align-items-center">
+                  <span className="d-flex justify-content-center style-span">
+                    Servicio de Verificación de Representaciones Impresas
+                  </span>
+                  <span className="d-flex justify-content-center style-span">
+                    Visor de Expedientes
+                  </span>
+                </div>
+              </div>
 
               <div
                 className="row col-12 col-md-12 col-lg-12"
-                style={{ paddingTop: "50px" }}
+                style={{ paddingTop: "10px" }}
               >
                 <span className="style-asunto">
                   Expediente:{" "}
@@ -119,29 +126,45 @@ export default function Expediente() {
                           </div>
                           <div className="d-flex justify-content-center col-2">
                             <div className="style-div-botones">
-                              <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={() => {
-                                  visualizar(docExp?.Guid);
-                                }}
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                  <Tooltip id={"overlay-to"}>
+                                    Visualizar
+                                  </Tooltip>
+                                }
                               >
-                                <i className="bi bi-eye"></i>
-                              </button>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  onClick={() => {
+                                    visualizar(docExp?.Guid);
+                                  }}
+                                >
+                                  <i className="bi bi-eye"></i>
+                                </button>
+                              </OverlayTrigger>
                             </div>
                             <div className="style-div-botones">
-                              <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={() => {
-                                  descargar(
-                                    docExp?.Guid,
-                                    docExp!.NombreArchivo!.toString()
-                                  );
-                                }}
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                  <Tooltip id={"overlay-to"}>Descargar</Tooltip>
+                                }
                               >
-                                <i className="bi bi-download"></i>
-                              </button>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  onClick={() => {
+                                    descargar(
+                                      docExp?.Guid,
+                                      docExp!.NombreArchivo!.toString()
+                                    );
+                                  }}
+                                >
+                                  <i className="bi bi-download"></i>
+                                </button>
+                              </OverlayTrigger>
                             </div>
                             {url != null ? (
                               <ModalDocumento

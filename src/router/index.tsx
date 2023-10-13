@@ -4,19 +4,19 @@ import Expediente from "../components/expediente";
 import { Navigate } from "react-router-dom";
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/verifica-cvd",
     element: <App />,
   },
   {
     path: "*",
-    element: <Navigate to="/" />,
+    element: <Navigate to="/verifica-cvd" />,
   },
   {
-    path: "/:id",
+    path: "/verifica-cvd/:id",
     element: <App />,
   },
   {
-    path: "/verExpedientePorCVD/:id",
+    path: "/verifica-cvd/verExpedientePorCVD/:id",
     element: <Expediente />,
   },
 ]);
