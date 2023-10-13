@@ -119,7 +119,7 @@ export default function CVD() {
                   <button
                     style={{ maxWidth: "200px", backgroundColor: "#01478c" }}
                     className="form-control text-white w-100"
-                    disabled={!isCaptchaSuccessful}
+                    // disabled={!isCaptchaSuccessful}
                     onClick={goExpediente}
                   >
                     Buscar
